@@ -1,0 +1,33 @@
+[package]
+name = "mrmrs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "mrmrs"
+crate-type = ["cdylib"]
+
+[dependencies]
+indicatif = "0.17.9"
+multiversion = "0.8.0"
+polars = { version = "0.52.0", features = ["lazy", "timezones"] }
+pyo3-polars = "0.25.0"
+rayon = "1.11.0"
+thiserror = "2.0.16"
+
+[dependencies.pyo3]
+version = "0.26.0"
+optional = true
+
+[features]
+default = ["python"]
+python = ["pyo3"]
+
+[dev-dependencies]
+approx = "0.5"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
