@@ -29,7 +29,6 @@ impl TaskType {
     }
 }
 
-// Helper function to convert PolarsError to PyErr
 fn polars_to_py_err(err: PolarsError) -> PyErr {
     PyValueError::new_err(format!("Polars error: {err}"))
 }
@@ -73,7 +72,6 @@ pub fn mrmr(
         TaskType::Regression => f_regression(&df, &y).map_err(polars_to_py_err)?,
     };
 
-    // Create progress bar for feature selection
     let pb = ProgressBar::new(number_of_features as u64);
     pb.set_style(
         ProgressStyle::default_bar()
@@ -82,7 +80,7 @@ pub fn mrmr(
             .progress_chars("#>-"),
     );
 
-    // Select the features
+    // feature selection loop
     for num_selected in 1..=number_of_features {
         // update the redundance for each feature
         // compute the score for each feature (relevance / redundance)
@@ -144,7 +142,6 @@ pub fn mrmr(
             selected_mask[max_score_feature.idx] = true;
             selected_features.push(max_score_feature.clone());
 
-            // Update progress bar
             pb.set_position(selected_features.len() as u64);
             pb.set_message(format!("Selected: {}", max_score_feature.name));
         } else {
@@ -152,7 +149,6 @@ pub fn mrmr(
         }
     }
 
-    // Finish the progress bar
     pb.finish_with_message(format!(
         "Completed: {} features selected",
         selected_features.len(),
