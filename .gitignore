@@ -73,3 +73,6 @@ docs/_build/
 
 *.pdf
 *.json
+
+# Benchmark data
+bench/data/

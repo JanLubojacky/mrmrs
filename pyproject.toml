@@ -14,3 +14,6 @@ dynamic = ["version"]
 dependencies = ["polars>=1.35.0", "pyarrow>=21.0.0"]
 [tool.maturin]
 features = ["pyo3/extension-module"]
+
+[tool.uv.workspace]
+members = ["bench"]
