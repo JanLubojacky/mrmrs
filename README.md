@@ -1,8 +1,8 @@
 # MRMRS
 
-Python library that implements the mRMR algorithm for feature selection. mRMR means "minimum Redundancy - Maximum Relevance". It is a feature selection algorithm that calculates the relevance of each feature to the target variable and also the redundance between selected features to provide a "minimal optimal" feature set that is highly relevant to the target variable while minimizing the redundance between the selected features.
+Python library that implements the mRMR algorithm for feature selection. mRMR means "minimum Redundancy - Maximum Relevance". It is a feature selection algorithm that calculates the relevance of each feature to the target variable and the redundance between the selected features to provide a "minimal optimal" diverse feature set that is highly relevant to the target variable.
 
-Currently the following methods are implemented (with plans to add more):
+Currently the following methods are implemented (with plans to add more in the future):
 
 **relevance**
 - f-statistic from one-way ANOVA for classification
@@ -11,7 +11,7 @@ Currently the following methods are implemented (with plans to add more):
 **redundance**
 - pearsons correlation
 
-This is a re-implementation of the [existing mRMR package](https://github.com/smazzanti/mrmr) that sadly does not seem to be mainined anymore.
+This package is based on the [mrmr-selection](https://github.com/smazzanti/mrmr) package.
 
 This package is written in rust and uses the polars api from rust so it only works on polars dataframes (pandas dataframes can be converted to polars easily for the purposes of using them with this package.)
 
@@ -37,14 +37,14 @@ subset_df = df.select(selected_feature_names)
 ## Installation
 
 ```bash
+uv add mrmrs
 ```
 
-or using pip you can do
+or
 
 ```bash
+pip install mrmrs
 ```
-
-currently wheels are available for macs with arm64 chips and linux with x86_64. On other platforms you will need the rust compiler installed to build the package.
 
 ## Development
 **Requirements**
@@ -77,6 +77,38 @@ The original mRMR package is quite slow. This package
 - is a binary with minimal dependencies so it imports in ms even on cold imports (mRMR takes ~20s on cold imports and 700ms on warm imports for me on M4 chip) while this package takes under 5 ms in both cases
 - The actual mRMR algorithm runs faster, a lot faster. Testing on toy datasets created by `sklearns.datsets.make_classification` with 5k-80k features, 1000 samples and 100 selected features this package was 80-280x faster than the mrmr-selection package, the speedup is better on larger feature sets, for the one with 80k features, this package took 3s while mrmr-selection took 14 minutes!
 
-## Resources
-- [Minimum Redundancy Feature Selection from Microarray Gene Expression Data (o.g. paper)](https://ranger.uta.edu/~chqding/papers/gene_select.pdf)
+## Benchmarks
+
+Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) package on synthetic data generated with `sklearn.datasets.make_classification` (1000 samples, classification task). Each configuration was run 5 times, reporting mean ± std.
+
+**Hardware:** AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
+
+### Scaling total features (selecting 50 features)
+
+| Features | mrmrs (s) | mrmr_selection (s) | Speedup |
+|----------|-----------|---------------------|---------|
+| 500 | 0.009 ± 0.001 | 2.286 ± 0.602 | **198x** |
+| 1,000 | 0.016 ± 0.002 | 3.181 ± 0.041 | **234x** |
+| 5,000 | 0.069 ± 0.005 | 18.242 ± 0.042 | **269x** |
+| 10,000 | 0.170 ± 0.005 | 30.680 ± 0.130 | **184x** |
+| 20,000 | 0.357 ± 0.010 | 56.938 ± 1.506 | **155x** |
+| 50,000 | 0.963 ± 0.007 | 136.115 ± 1.191 | **143x** |
+
+### Scaling selected features (from 5,000 total features)
+
+| Selected (K) | mrmrs (s) | mrmr_selection (s) | Speedup |
+|-------------|-----------|---------------------|---------|
+| 10 | 0.048 ± 0.001 | 4.201 ± 0.112 | **89x** |
+| 50 | 0.070 ± 0.001 | 18.473 ± 0.218 | **263x** |
+| 100 | 0.097 ± 0.002 | 36.183 ± 0.076 | **380x** |
+| 200 | 0.149 ± 0.005 | 71.431 ± 0.622 | **519x** |
+
+The speedup increases with larger K because mrmrs calculates redundancies incrementally in parallel while mrmr_selection recomputes them from scratch each round.
+
+To reproduce: `uv run --package mrmrs-bench python bench/benchmark.py`
+
+## References
+- [mrmr-selection](https://github.com/smazzanti/mrmr)
+- [Numerically stable parallel computation of (co-)variance](https://dl.acm.org/doi/10.1145/3221269.3223036)
+- [Minimum Redundancy Feature Selection from Microarray Gene Expression Data (o.g. mRMR paper)](https://ranger.uta.edu/~chqding/papers/gene_select.pdf)
 - [Maximum Relevance and Minimum Redundancy Feature Selection Methods for a Marketing Machine Learning Platform](https://arxiv.org/pdf/1908.05376)
