@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 indicatif = "0.17.9"
 multiversion = "0.8.0"
-polars = { version = "0.52.0", features = ["lazy", "timezones"] }
+polars = { version = "0.52.0", default-features = false, features = ["lazy", "timezones"] }
 pyo3-polars = "0.25.0"
 rayon = "1.11.0"
 thiserror = "2.0.16"
