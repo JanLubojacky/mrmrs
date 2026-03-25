@@ -32,8 +32,8 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install Python dependencies
-        run: uv sync
+      - name: Create Python Venv
+        run: uv venv
 
       - name: Run tests
         run: |
