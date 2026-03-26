@@ -18,13 +18,13 @@ This package is written in rust and uses the polars api from rust so it only wor
 ## How to use
 ```python
 import polars as pl
-from mrmrs import mrmr
+from mrmrs import mrmr, Feature
 
 df: pl.DataFrame = pl.read_csv("dataset.csv")
 y: pl.Series = pl.read_csv("target.csv")["target"]
 
-selected_features: list[mrmr.Feature] = mrmr(
-    X=df, 
+selected_features: list[Feature] = mrmr(
+    x=df,
     y=y, 
     number_of_features=50,
     task_type="classification" # or "regression"

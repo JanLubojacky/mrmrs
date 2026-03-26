@@ -23,7 +23,7 @@ class Feature:
     score: float
 
 def mrmr(
-    X: DataFrame,
+    x: DataFrame,
     y: Series,
     number_of_features: int,
     task_type: Literal["classification", "regression"],
@@ -36,7 +36,7 @@ def mrmr(
     slice of the one returned from this function.
 
     Inputs:
-        X - a polars dataframe with the features as columns
+        x - a polars dataframe with the features as columns
         y - a polars series with the target variable
         number_of_features - number of features to select
         task_type - task to perform the selection for, either regression or classification
