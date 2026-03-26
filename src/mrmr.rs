@@ -36,7 +36,7 @@ fn polars_to_py_err(err: PolarsError) -> PyErr {
 /// Performs feature selection using the mRMR (minimum Redundancy Maximum Relevance) algorithm.
 ///
 /// # Arguments
-/// * `x` - Input dataframe containing feature columns
+/// * `X` - Input dataframe containing feature columns
 /// * `y` - Target variable series
 /// * `number_of_features` - Maximum number of features to select
 /// * `task_type` - Either "classification" or "regression"
@@ -47,15 +47,16 @@ fn polars_to_py_err(err: PolarsError) -> PyErr {
 /// # Errors
 /// Returns error if task_type is invalid or data processing fails
 #[pyfunction]
+#[allow(non_snake_case)]
 pub fn mrmr(
-    x: PyDataFrame,
+    X: PyDataFrame,
     y: PySeries,
     number_of_features: usize,
     task_type: &str,
 ) -> PyResult<Vec<Feature>> {
     let task_type = TaskType::from_str(task_type)?;
 
-    let df: DataFrame = x.into();
+    let df: DataFrame = X.into();
     let df = get_numeric_columns(&df)
         .map_err(|e| PyValueError::new_err(format!("Failed to filter numeric columns: {e}")))?;
     let y: Series = y.into();
