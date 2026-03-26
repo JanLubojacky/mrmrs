@@ -1,25 +1,14 @@
 # MRMRS
 
-A Python library that implements the mRMR algorithm for feature selection. mRMR means "minimum Redundancy - Maximum Relevance". 
+[![PyPI](https://img.shields.io/pypi/v/mrmrs)](https://pypi.org/project/mrmrs/)
+[![Tests](https://github.com/JanLubojacky/mrmrs/actions/workflows/test.yml/badge.svg)](https://github.com/JanLubojacky/mrmrs/actions/workflows/test.yml)
 
-mRMR is a feature selection algorithm that in each round calculates the relevance of each feature to the target variable and weights it by the mean redundance vs all already selected variables.
+Blazing-fast feature selection using the mRMR (minimum Redundancy - Maximum Relevance) algorithm.
 
-This results in a "minimal optimal" set of features that predict the target variable well (in terms of relevance) while being not too much similar to each other (in terms of redundance).
-
-## Features
-
-Currently the following methods are implemented (with plans to add more in the future):
-
-**relevance**
-- f-statistic from one-way ANOVA for classification tasks
-- pearsons correlation coefficient for regression tasks
-
-**redundance**
-- pearsons correlation coefficient
-
-This package is written in rust and uses the polars api from rust and works directly on polars dataframes without any copies (pandas dataframes can be converted to polars dataframes easily for the purposes of using this package.)
-
-We make use of Rust, SIMD (with scalar fallback if not available) and a modification to the algorithm so that redundancies are updated incrementally rather than recomputed from scratch in each round. This results in the algorithm running upwards of two orders of magnitude faster vs a popular python implementation. No heavy dependencies also result in very quick import times.
+- **100-500x faster** than [mrmr-selection](https://github.com/smazzanti/mrmr) on real workloads
+- **Works directly on Polars DataFrames** — zero-copy, no conversions needed
+- **Sub-5ms import time** — no heavy dependencies, just a Rust binary
+- **Written in Rust** with SIMD acceleration and incremental redundancy updates
 
 ## Installation
 
@@ -33,7 +22,7 @@ or
 pip install mrmrs
 ```
 
-## How to use
+## Quick Start
 ```python
 import polars as pl
 from mrmrs import mrmr, Feature
@@ -43,7 +32,7 @@ y: pl.Series = pl.read_csv("target.csv")["target"]
 
 selected_features: list[Feature] = mrmr(
     x=df,
-    y=y, 
+    y=y,
     number_of_features=50,
     task_type="classification" # or "regression"
 )
@@ -52,40 +41,20 @@ selected_feature_names: list[str] = [feature.name for feature in selected_featur
 subset_df = df.select(selected_feature_names)
 ```
 
-## Development
-**Requirements**
-- uv, cargo, maturin
+## Supported Methods
 
-1. **create uv venv**
-```sh
-uv sync
-```
-2. **activate uv venv**
-```sh
-source .venv/bin/activate
-```
-3. **install this pkg to this uv venv in release mode**
-```sh
-maturin develop --release --uv
-```
-alternatively if you enter this repository while you have another venv activated and run the same command maturin will install this pkg to that environment
+**Relevance**
+- F-statistic from one-way ANOVA (classification)
+- Pearson's correlation coefficient (regression)
 
-## Running tests
-- currently there is no separation between the rust crate and the python bindings so this requries the venv to be activated
-```sh
-cargo test
-```
-
-## Performance
-The original mRMR package is quite slow. This package
-- makes no clones and is very efficient about memory with the polars apache arrow memory model
-- calculates redundancies incrementally in each round in parallel
-- is a binary with minimal dependencies so it imports in ms even on cold imports (mRMR takes ~20s on cold imports and 700ms on warm imports for me on M4 chip) while this package takes under 5 ms in both cases
-- The actual mRMR algorithm runs faster, a lot faster. Testing on toy datasets created by `sklearns.datsets.make_classification` with 5k-80k features, 1000 samples and 100 selected features this package was 80-280x faster than the mrmr-selection package, the speedup is better on larger feature sets, for the one with 80k features, this package took 3s while mrmr-selection took 14 minutes!
+**Redundancy**
+- Pearson's correlation coefficient
 
 ## Benchmarks
 
-Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) package on synthetic data generated with `sklearn.datasets.make_classification` (1000 samples, classification task). Each configuration was run 5 times, reporting mean ± std.
+Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) package on synthetic data generated with `sklearn.datasets.make_classification` (1000 samples, classification task). Each configuration was run 5 times, reporting mean +/- std.
+
+mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailable), zero-copy Polars Arrow memory, and an incremental redundancy update that avoids recomputation each round.
 
 **Hardware:** AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
 
@@ -112,6 +81,30 @@ Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) pack
 The speedup increases with larger K because mrmrs calculates redundancies incrementally in parallel while mrmr_selection recomputes them from scratch each round.
 
 To reproduce: `uv run --package mrmrs-bench python bench/benchmark.py`
+
+## Development
+**Requirements**
+- uv, cargo, maturin
+
+1. **create uv venv**
+```sh
+uv sync
+```
+2. **activate uv venv**
+```sh
+source .venv/bin/activate
+```
+3. **install this pkg to this uv venv in release mode**
+```sh
+maturin develop --release --uv
+```
+alternatively if you enter this repository while you have another venv activated and run the same command maturin will install this pkg to that environment
+
+## Running tests
+- currently there is no separation between the rust crate and the python bindings so this requries the venv to be activated
+```sh
+cargo test
+```
 
 ## References
 - [mrmr-selection](https://github.com/smazzanti/mrmr)
