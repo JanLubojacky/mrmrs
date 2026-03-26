@@ -76,7 +76,7 @@ mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailabl
 | 100 | 0.097 ± 0.002 | 36.183 ± 0.076 | **380x** |
 | 200 | 0.149 ± 0.005 | 71.431 ± 0.622 | **519x** |
 
-\* On AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
+*On AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
 
 The speedup increases with larger K because mrmrs calculates redundancies incrementally in parallel while mrmr_selection recomputes them from scratch each round.
 
