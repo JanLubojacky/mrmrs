@@ -1,19 +1,37 @@
 # MRMRS
 
-Python library that implements the mRMR algorithm for feature selection. mRMR means "minimum Redundancy - Maximum Relevance". It is a feature selection algorithm that calculates the relevance of each feature to the target variable and the redundance between the selected features to provide a "minimal optimal" diverse feature set that is highly relevant to the target variable.
+A Python library that implements the mRMR algorithm for feature selection. mRMR means "minimum Redundancy - Maximum Relevance". 
+
+mRMR is a feature selection algorithm that in each round calculates the relevance of each feature to the target variable and weights it by the mean redundance vs all already selected variables.
+
+This results in a "minimal optimal" set of features that predict the target variable well (in terms of relevance) while being not too much similar to each other (in terms of redundance).
+
+## Features
 
 Currently the following methods are implemented (with plans to add more in the future):
 
 **relevance**
-- f-statistic from one-way ANOVA for classification
-- pearsons correlation coefficient for regression
+- f-statistic from one-way ANOVA for classification tasks
+- pearsons correlation coefficient for regression tasks
 
 **redundance**
-- pearsons correlation
+- pearsons correlation coefficient
 
-This package is based on the [mrmr-selection](https://github.com/smazzanti/mrmr) package.
+This package is written in rust and uses the polars api from rust and works directly on polars dataframes without any copies (pandas dataframes can be converted to polars dataframes easily for the purposes of using this package.)
 
-This package is written in rust and uses the polars api from rust so it only works on polars dataframes (pandas dataframes can be converted to polars easily for the purposes of using them with this package.)
+We make use of Rust, SIMD (with scalar fallback if not available) and a modification to the algorithm so that redundancies are updated incrementally rather than recomputed from scratch in each round. This results in the algorithm running upwards of two orders of magnitude faster vs a popular python implementation. No heavy dependencies also result in very quick import times.
+
+## Installation
+
+```bash
+uv add mrmrs
+```
+
+or
+
+```bash
+pip install mrmrs
+```
 
 ## How to use
 ```python
@@ -32,18 +50,6 @@ selected_features: list[Feature] = mrmr(
 
 selected_feature_names: list[str] = [feature.name for feature in selected_features]
 subset_df = df.select(selected_feature_names)
-```
-
-## Installation
-
-```bash
-uv add mrmrs
-```
-
-or
-
-```bash
-pip install mrmrs
 ```
 
 ## Development
