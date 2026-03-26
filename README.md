@@ -27,11 +27,11 @@ pip install mrmrs
 import polars as pl
 from mrmrs import mrmr, Feature
 
-df: pl.DataFrame = pl.read_csv("dataset.csv")
+X: pl.DataFrame = pl.read_csv("dataset.csv")
 y: pl.Series = pl.read_csv("target.csv")["target"]
 
 selected_features: list[Feature] = mrmr(
-    x=df,
+    X=X,
     y=y,
     number_of_features=50,
     task_type="classification" # or "regression"
