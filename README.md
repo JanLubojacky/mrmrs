@@ -56,9 +56,7 @@ Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) pack
 
 mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailable), zero-copy Polars Arrow memory, and an incremental redundancy update that avoids recomputation each round.
 
-**Hardware:** AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
-
-### Scaling total features (selecting 50 features)
+### Scaling total features (selecting 50 features)*
 
 | Features | mrmrs (s) | mrmr_selection (s) | Speedup |
 |----------|-----------|---------------------|---------|
@@ -69,7 +67,7 @@ mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailabl
 | 20,000 | 0.357 ± 0.010 | 56.938 ± 1.506 | **155x** |
 | 50,000 | 0.963 ± 0.007 | 136.115 ± 1.191 | **143x** |
 
-### Scaling selected features (from 5,000 total features)
+### Scaling selected features (from 5,000 total features)*
 
 | Selected (K) | mrmrs (s) | mrmr_selection (s) | Speedup |
 |-------------|-----------|---------------------|---------|
@@ -77,6 +75,8 @@ mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailabl
 | 50 | 0.070 ± 0.001 | 18.473 ± 0.218 | **263x** |
 | 100 | 0.097 ± 0.002 | 36.183 ± 0.076 | **380x** |
 | 200 | 0.149 ± 0.005 | 71.431 ± 0.622 | **519x** |
+
+* On AMD Ryzen 5 5600 6-Core (12 threads), 32 GB RAM
 
 The speedup increases with larger K because mrmrs calculates redundancies incrementally in parallel while mrmr_selection recomputes them from scratch each round.
 
