@@ -5,7 +5,7 @@
 
 Blazing-fast feature selection using the mRMR (minimum Redundancy - Maximum Relevance) algorithm.
 
-- **100-500x faster** than [mrmr-selection](https://github.com/smazzanti/mrmr) on real workloads
+- **100-500x faster** than [mrmr-selection](https://github.com/smazzanti/mrmr)
 - **Works directly on Polars DataFrames** — zero-copy, no conversions needed
 - **Sub-5ms import time** — no heavy dependencies, just a Rust binary
 - **Written in Rust** with SIMD acceleration and incremental redundancy updates
