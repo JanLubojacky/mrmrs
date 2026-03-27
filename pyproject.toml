@@ -4,6 +4,9 @@ build-backend = "maturin"
 
 [project]
 name = "mrmrs"
+description = "Ultra fast mRMR algorithm for python"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Rust",
