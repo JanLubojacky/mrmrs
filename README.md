@@ -50,6 +50,30 @@ subset_df = df.select(selected_feature_names)
 **Redundancy**
 - Pearson's correlation coefficient
 
+## Development
+**Requirements**
+- uv, cargo, maturin
+
+1. **create uv venv**
+```sh
+uv sync
+```
+2. **activate uv venv**
+```sh
+source .venv/bin/activate
+```
+3. **install this pkg to this uv venv in release mode**
+```sh
+maturin develop --release --uv
+```
+alternatively if you enter this repository while you have another venv activated and run the same command maturin will install this pkg to that environment
+
+## Running tests
+- currently there is no separation between the rust crate and the python bindings so this requries the venv to be activated
+```sh
+cargo test
+```
+
 ## Benchmarks
 
 Benchmarked against the [mrmr-selection](https://github.com/smazzanti/mrmr) package on synthetic data generated with `sklearn.datasets.make_classification` (1000 samples, classification task). Each configuration was run 5 times, reporting mean +/- std.
@@ -81,30 +105,6 @@ mrmrs achieves its speed through Rust with SIMD (scalar fallback when unavailabl
 The speedup increases with larger K because mrmrs calculates redundancies incrementally in parallel while mrmr_selection recomputes them from scratch each round.
 
 To reproduce: `uv run --package mrmrs-bench python bench/benchmark.py`
-
-## Development
-**Requirements**
-- uv, cargo, maturin
-
-1. **create uv venv**
-```sh
-uv sync
-```
-2. **activate uv venv**
-```sh
-source .venv/bin/activate
-```
-3. **install this pkg to this uv venv in release mode**
-```sh
-maturin develop --release --uv
-```
-alternatively if you enter this repository while you have another venv activated and run the same command maturin will install this pkg to that environment
-
-## Running tests
-- currently there is no separation between the rust crate and the python bindings so this requries the venv to be activated
-```sh
-cargo test
-```
 
 ## References
 - [mrmr-selection](https://github.com/smazzanti/mrmr)
