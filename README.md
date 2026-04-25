@@ -111,3 +111,6 @@ cargo test
 - [Numerically stable parallel computation of (co-)variance](https://dl.acm.org/doi/10.1145/3221269.3223036)
 - [Minimum Redundancy Feature Selection from Microarray Gene Expression Data (o.g. mRMR paper)](https://ranger.uta.edu/~chqding/papers/gene_select.pdf)
 - [Maximum Relevance and Minimum Redundancy Feature Selection Methods for a Marketing Machine Learning Platform](https://arxiv.org/pdf/1908.05376)
+
+## AI Disclaimer
+All library code is handwritten (cause this is a sideproject for fun and I like doing it), claude is useful for writing tests and github actions though
