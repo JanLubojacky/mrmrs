@@ -1,3 +1,4 @@
+use log::warn;
 use polars::prelude::*;
 
 pub fn get_numeric_columns(df: &DataFrame) -> PolarsResult<DataFrame> {
@@ -7,6 +8,10 @@ pub fn get_numeric_columns(df: &DataFrame) -> PolarsResult<DataFrame> {
         .filter(|col| col.dtype().is_numeric())
         .map(|col| col.name().as_str())
         .collect();
+
+    if numerical_cols.len() != df.shape().1 {
+        warn!("Ignoring non-numeric columns, if you wish to use them please encode them first!")
+    }
 
     df.select(numerical_cols)
 }

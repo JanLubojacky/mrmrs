@@ -8,9 +8,9 @@ pub mod utils;
 use pyo3::prelude::*;
 
 #[cfg(feature = "python")]
-/// A Python module implemented in Rust.
 #[pymodule]
 fn mrmrs(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    pyo3_log::init();
     m.add_function(wrap_pyfunction!(mrmr::mrmr, m)?)?;
     m.add_class::<stats::Feature>()?;
     Ok(())
