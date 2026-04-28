@@ -42,7 +42,7 @@ pub fn f_classification(df: &DataFrame, y: &Series) -> PolarsResult<Vec<Feature>
                 let num_of_classes = stats.len();
 
                 // Compute per-class mean and variance from accumulated stats
-                // var = E[X²] - E[X]² (population variance)
+                // var = E[X^2] - E[X]^2 (population variance)
                 let group_stats: Vec<(f64, f64, f64)> = stats
                     .values()
                     .map(|(sum, sum_sq, count)| {
